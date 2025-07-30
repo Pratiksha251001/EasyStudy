@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>easyStudy.in</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #d0417e; /* Jaipur Pink */
+            --secondary-color: #1d5189; /* Royal Blue */
+            --dark-color: #121e32;
+            --light-color: #f8fafc;
+            --gray-color: #94a3b8;
+            --success-color: #10b981;
+            --error-color: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-image: url('https://itchronicles.com/wp-content/uploads/2020/10/speech-to-text-1024x683.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed; /* Fix background image */
+            background-position: center;
+            color: var(--dark-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background-color: rgba(30, 41, 59, 0.8); /* Semi-transparent background */
+            border-radius: 16px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            margin-top: 3rem;
+            border: 1px solid #ff69b4; /* width | style | color */
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .subtitle {
+            color: var(--gray-color);
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .text-input {
+            margin-bottom: 1.5rem;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 1rem;
+            border: 2px solid #61aaf3;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 1rem;
+            resize: vertical;
+            transition: border-color 0.3s ease;
+            background-color: #a4c9ef;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        button {
+            flex: 1;
+            min-width: 120px;
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            font-family: inherit;
+            font-weight: 500;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .output-container {
+            margin-top: 4rem;
+            padding: 1.5rem;
+            background-color: #a4c9ef;
+            border-radius: 12px;
+            border: 2px dashed #61aafe;
+            display: none;
+        }
+
+        .output-container.active {
+            display: block;
+        }
+
+        .audio-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 1rem;
+            gap: 1rem; /* Added gap between buttons */
+        }
+
+        .progress-container {
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .progress {
+            width: 100%;
+            height: 5px;
+            background-color: #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary-color);
+            width: 0;
+            transition: width 0.1s;
+        }
+
+        footer {
+            text-align: center;
+            color: var(--gray-color);
+            font-size: 0.875rem;
+            margin-top: auto;
+        }
+
+        /* Smaller buttons for audio controls */
+        .small-button {
+            padding: 0.5rem 1rem; /* Smaller padding */
+            font-size: 0.9rem; /* Smaller font size */
+            min-width: 80px; /* Minimum width for smaller buttons */
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.8rem; /* Adjusted font size for the header */
+            }
+
+            .subtitle {
+                font-size: 0.9rem; /* Adjusted font size for the subtitle */
+            }
+
+            textarea {
+                min-height: 100px; /* Reduced minimum height for the text area */
+            }
+
+            button {
+                min-width: 100px; /* Set a minimum width for buttons */
+                font-size: 0.9rem; /* Adjusted font size for buttons */
+            }
+
+            .container {
+                padding: 1.5rem; /* Reduced padding for smaller screens */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>EASY STUDY</h1>
+            <h1>Document Reader for Students</h1>
+            <p class="subtitle">
+                Struggling to read your study material? Let us read it aloud for you.
+                Upload any document and listen to it read aloud.
+            </p>
+        </header>
+
+        <div class="text-input">
+            <textarea id="text-to-speech" placeholder="Enter text here or upload a document..."></textarea>
+        </div>
+
+        <div class="button-group">
+            <button id="upload-btn">Upload Document</button>
+            <button id="speak-btn">Read Aloud</button>
+        </div>
+
+        <div id="output-container" class="output-container">
+            <h3>Audio Output</h3>
+            <div class="audio-controls">
+                <button id="pause-btn" class="small-button">Pause</button>
+                <button id="resume-btn" class="small-button" disabled>Resume</button>
+                <button id="stop-btn" class="small-button">Stop</button>
+                <button id="download-btn" class="small-button">Download</button>
+            </div>
+            <div class="progress-container">
+                <div class="progress">
+                    <div class="progress-bar" id="progress-bar"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Document Reader. Powered by Web Speech API.</p>
+        <p>📧 Email: pratikshaparise96@gmail.com </p>
+        <p class="footer-links">
+            🔗 
+            <a href="https://github.com/Pratiksha251001" target="_blank" rel="noopener noreferrer">GitHub</a> | 
+            <a href="https://www.linkedin.com/in/pratiksha-parise/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        </p>
+        <p>&copy;Easy_engineering</p>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const textInput = document.getElementById('text-to-speech');
+            const speakBtn = document.getElementById('speak-btn');
+            const uploadBtn = document.getElementById('upload-btn');
+            const outputContainer = document.getElementById('output-container');
+            const progressBar = document.getElementById('progress-bar');
+            const pauseBtn = document.getElementById('pause-btn');
+            const resumeBtn = document.getElementById('resume-btn');
+            const stopBtn = document.getElementById('stop-btn');
+            const downloadBtn = document.getElementById('download-btn');
+
+            let currentUtterance;
+
+            // Function to read text from a file
+            function readFile(file) {
+                const reader = new FileReader();
+                const fileType = file.type;
+
+                if (fileType === "application/pdf") {
+                    reader.onload = function(event) {
+                        const pdfData = new Uint8Array(event.target.result);
+                        pdfjsLib.getDocument({ data: pdfData }).promise.then(pdf => {
+                            let text = '';
+                            const numPages = pdf.numPages;
+
+                            const pagePromises = [];
+                            for (let i = 1; i <= numPages; i++) {
+                                pagePromises.push(pdf.getPage(i).then(page => {
+                                    return page.getTextContent().then(content => {
+                                        return content.items.map(item => item.str).join(' ');
+                                    });
+                                }));
+                            }
+
+                            Promise.all(pagePromises).then(pageTexts => {
+                                text = pageTexts.join('\n\n'); // Join pages with double newline for better readability
+                                textInput.value = text;
+                            }).catch(err => {
+                                console.error("Error extracting text from PDF:", err);
+                                textInput.value = 'Error reading PDF file. Please try again or enter text manually.';
+                            });
+                        }).catch(err => {
+                            console.error("Error loading PDF document:", err);
+                            textInput.value = 'Error loading PDF document. It might be corrupted or an unsupported PDF. Please try again or enter text manually.';
+                        });
+                    };
+                    reader.readAsArrayBuffer(file);
+                } else if (fileType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" || fileType === "application/msword") {
+                    reader.onload = function(event) {
+                        const arrayBuffer = event.target.result;
+                        mammoth.extractRawText({ arrayBuffer: arrayBuffer })
+                            .then(result => {
+                                textInput.value = result.value; // The extracted text
+                            })
+                            .catch(err => {
+                                console.error("Error reading DOCX file:", err);
+                                textInput.value = 'Error reading DOCX file. Please try again or enter text manually.';
+                            });
+                    };
+                    reader.readAsArrayBuffer(file);
+                } else if (fileType === "text/plain") {
+                    reader.onload = function(event) {
+                        textInput.value = event.target.result;
+                    };
+                    reader.readAsText(file);
+                } else {
+                    textInput.value = 'Unsupported file type. Please upload a .txt, .pdf, .doc, or .docx file.';
+                }
+            }
+
+            // Handle file upload
+            uploadBtn.addEventListener('click', () => {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.txt, .pdf, .doc, .docx';
+                input.onchange = (event) => {
+                    const file = event.target.files[0];
+                    if (file) {
+                        readFile(file);
+                    }
+                };
+                input.click();
+            });
+
+            // Speak function
+            speakBtn.addEventListener('click', () => {
+                const text = textInput.value.trim();
+                if (!text) {
+                    alert('Please enter some text or upload a document.');
+                    return;
+                }
+
+                // Stop any ongoing speech
+                if (speechSynthesis.speaking) {
+                    speechSynthesis.cancel();
+                }
+
+                currentUtterance = new SpeechSynthesisUtterance(text);
+                currentUtterance.voice = speechSynthesis.getVoices().find(voice => voice.name.includes('Female')) || speechSynthesis.getVoices()[0]; // Select a female voice
+
+                // Show the output container
+                outputContainer.classList.add('active');
+
+                // Reset progress bar
+                progressBar.style.width = '0%';
+
+                // Event listeners for utterance progress
+                currentUtterance.onstart = () => {
+                    console.log('Speech started');
+                    progressBar.style.width = '0%'; // Reset progress bar
+                };
+
+                currentUtterance.onend = () => {
+                    console.log('Speech ended');
+                    progressBar.style.width = '100%'; // Complete the progress bar
+                };
+
+                currentUtterance.onerror = (event) => {
+                    if (event.error !== 'interrupted') { // Only show error if it's not interrupted
+                        console.error('Speech synthesis error:', event);
+                        alert('An error occurred during speech synthesis: ' + event.error);
+                    }
+                    progressBar.style.width = '0%'; // Reset progress on error
+                };
+
+                currentUtterance.onboundary = (event) => {
+                    if (event.name === 'word' && event.charIndex !== undefined) {
+                        const totalLength = text.length;
+                        const progress = (event.charIndex / totalLength) * 100;
+                        progressBar.style.width = progress + '%';
+                    }
+                };
+
+                // Speak the text
+                speechSynthesis.speak(currentUtterance);
+            });
+
+            // Pause functionality
+            pauseBtn.addEventListener('click', () => {
+                if (speechSynthesis.speaking) {
+                    speechSynthesis.pause();
+                    pauseBtn.disabled = true;
+                    resumeBtn.disabled = false;
+                }
+            });
+
+            // Resume functionality
+            resumeBtn.addEventListener('click', () => {
+                if (speechSynthesis.paused) {
+                    speechSynthesis.resume();
+                    pauseBtn.disabled = false;
+                    resumeBtn.disabled = true;
+                }
+            });
+
+            // Stop functionality
+            stopBtn.addEventListener('click', () => {
+                if (speechSynthesis.speaking || speechSynthesis.paused) {
+                    speechSynthesis.cancel(); // Stop speaking
+                    outputContainer.classList.remove('active'); // Hide the output container
+                    progressBar.style.width = '0%'; // Reset progress bar
+                }
+            });
+
+            // Download functionality
+            downloadBtn.addEventListener('click', () => {
+                const text = textInput.value.trim();
+                if (!text) {
+                    alert('Please enter some text to download.');
+                    return;
+                }
+                const audioBlob = new Blob([text], { type: 'audio/wav' });
+                const audioUrl = URL.createObjectURL(audioBlob);
+                const a = document.createElement('a');
+                a.href = audioUrl;
+                a.download = 'audio.wav';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            });
+        });
+    </script>
+</body>
+</html>
